@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style> #miniCard {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px;
+            max-width: 300px;
+            font-family: sans-serif;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+        .name {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .bio {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 8px 12px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .changeColor {
+            background-color: #007bff;
+            color: white;
+        }
+        .showFunFact {
+            background-color: #28a745;
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .theme-switcher-button {
+            background-color: #6c757d;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        
+        body.dark-mode {
+            background-color: #222;
+            color: #eee;
+        }
+
+        body.dark-mode #miniCard {
+            background-color: #333;
+            border-color: #555;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        }
+
+        body.dark-mode .name {
+            color: #eee;
+        }
+
+        body.dark-mode .bio {
+            color: #bbb;
+        }
+
+        body.dark-mode .bg-yellow-100 {
+            background-color: #5a521a; 
+            border-color: #7a702b;
+            color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="miniCard"></div>
+    <script>
+let container=document.getElementById  ("miniCard");     
+let nam =document.createElement("h1");
+nam.className="name";
+nam.textContent="Iam YahiaOrhan";
+container.appendChild(nam);
+
+let para =document.createElement("p");
+para.className="bio";
+para.textContent="I am cs student and IEEE member , dl eng";
+container.appendChild(para);
+    
+let button =document.createElement("button");
+button.className="changeColor";
+button.textContent="change color";
+container.appendChild(button);
+
+document.getElementsByClassName("changeColor")[0].addEventListener("click",
+            function() {
+                document.getElementsByClassName("bio")[0].style.color = "blue";
+            }
+        );
+
+    const funFactParagraph = document.createElement('p');
+        funFactParagraph.textContent = "Fun Fact: I once coded for 24 hours straight on a hackathon!";
+        funFactParagraph.classList.add(
+            'text-sm', 'text-gray-500', 'italic', 'mt-2', 'p-2', 'bg-yellow-100',
+            'rounded-md', 'border', 'border-yellow-200', 'hidden' 
+        );
+        container.appendChild(funFactParagraph);
+
+        
+        const funFactButton = document.createElement('button');
+        funFactButton.className = "showFunFact";
+        funFactButton.textContent = "Show Fun Fact";
+        container.appendChild(funFactButton); 
+
+        funFactButton.addEventListener('click', () => {
+            funFactParagraph.classList.toggle('hidden'); 
+            if (funFactParagraph.classList.contains('hidden')) {
+                funFactButton.textContent = "Show Fun Fact";
+            } else {
+                funFactButton.textContent = "Hide Fun Fact";
+            }
+        });
+    const themeSwitcherButton = document.createElement('button');
+        themeSwitcherButton.className = "theme-switcher-button";
+        themeSwitcherButton.textContent = "Toggle Dark Mode";
+        container.insertBefore(themeSwitcherButton, container.firstChild); 
+
+        themeSwitcherButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                themeSwitcherButton.textContent = "Toggle Light Mode";
+            } else {
+                themeSwitcherButton.textContent = "Toggle Dark Mode";
+            }
+        });
+    </script>
+</body>
+</html>
