@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: bold;
+        }
+        #status {
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 1.125rem; /* text-lg */
+        }
+        button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.125rem; /* text-lg */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #studentInfo {
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            min-height: 100px;
+            background-color: #f8f9fa;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            visibility: hidden;
+        }
+        .student-item {
+            padding: 8px 12px;
+            border-bottom: 1px dashed #dcdcdc;
+            font-size: 1rem;
+            color: #34495e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .student-item:last-child {
+            border-bottom: none;
+        }
+        .loading-text {
+            color: #007bff;
+            font-style: italic;
+        }
+        .error-text {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .success-text {
+            color: #28a745;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Async Student Data Loader</h1>
+    <p id="status">Click the following button to load student data...</p>
+    <button id="loadBtn">Load Student Data</button>
+
+    <div id="studentInfo" style="margin-top: 20px;"></div>
+    
+
+    <script>function fetchStudentData(studentId) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (studentId === 1) {
+                        resolve(`Student #${studentId}: John Doe (Age: 20)`);
+                    } else if (studentId === 2) {
+                        resolve(`Student #${studentId}: Jane Smith (Age: 22)`);
+                    } else if (studentId === 3) {
+                        resolve(`Student #${studentId}: Peter Jones (Age: 21)`);
+                    } else {
+                        
+                        reject(`Student with ID ${studentId} not found.`);
+                    }
+                }, 1000); 
+            });
+        }
+
+        
+        async function loadStudents(studentIdsToLoad) {
+            const statusParagraph = document.getElementById('status');
+            const studentInfoDiv = document.getElementById('studentInfo');
+            const loadButton = document.getElementById('loadBtn');
+
+            
+            loadButton.disabled = true;
+            statusParagraph.textContent = 'Loading student data... Please wait.';
+            studentInfoDiv.innerHTML = '';  
+
+            
+            studentIdsToLoad.forEach(id => {
+                studentInfoDiv.style.visibility = "visible";
+                const studentItem = document.createElement('div');
+                studentItem.id = `student-${id}`;
+                studentItem.className = 'student-item loading-text';
+                studentItem.textContent = `Loading Student #${id}...`;
+                studentInfoDiv.appendChild(studentItem);
+            });
+
+            
+            const results = await Promise.allSettled(
+                studentIdsToLoad.map(id => fetchStudentData(id))
+            );
+
+            results.forEach((result, index) => {
+                const studentId = studentIdsToLoad[index];
+                const studentItemDiv = document.getElementById(`student-${studentId}`);
+
+                if (result.status === 'fulfilled') {
+                    
+                    studentItemDiv.textContent = result.value;
+                    studentItemDiv.classList.remove('loading-text', 'error-text');
+                    studentItemDiv.classList.add('success-text');
+                } else {
+                    
+                    studentItemDiv.textContent = `Failed to load Student #${studentId}: ${result.reason}`;
+                    studentItemDiv.classList.remove('loading-text', 'success-text');
+                    studentItemDiv.classList.add('error-text');
+                }
+            });
+
+            
+            loadButton.disabled = false;
+            statusParagraph.textContent = 'Student data loaded (or failed) for all requested IDs.';
+        }
+
+        
+        document.getElementById('loadBtn').addEventListener('click', () => {
+        
+            const studentIds = [1, 2, 99, 3]; 
+            loadStudents(studentIds);
+        });
+
+</script>
+</body>
+</html>
+
+
